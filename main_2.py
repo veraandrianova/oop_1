@@ -13,11 +13,11 @@ class Alphabet:
 
 class EngAlphabet(Alphabet):
 
+     __letters_num = 26
+
      def __init__(self, lang, letters):
          super().__init__(lang, letters)
 
-     def __letters_num(self):
-         return len(self.letters)
 
      def is_en_letter(self, letter):
          self.letter = letter
@@ -26,7 +26,7 @@ class EngAlphabet(Alphabet):
          return False
 
      def letters_num(self):
-         return len(self.letters)
+         return EngAlphabet.__letters_num
 
      @staticmethod
      def example():
