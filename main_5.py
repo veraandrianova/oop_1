@@ -29,8 +29,12 @@ class Members:
 
     def get_members(self):
         return self.member.pop()
+
+
 f = Members()
 print(f.get_members)
+print(f.member)
+
 
 class Hero:
     number = 0
@@ -94,5 +98,5 @@ class Play():
         self.command_2.get_command = self.soldier.get_members()
         print(self.command_1.get_command, self.command_2.get_command)
 
-game = Play(1,1,2,2)
 
+game = Play(1, 1, 2, 2)

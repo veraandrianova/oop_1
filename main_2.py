@@ -1,6 +1,5 @@
 class Alphabet:
 
-
     def __init__(self, lang, letters):
         self.lang = lang
         self.letters = letters
@@ -11,26 +10,25 @@ class Alphabet:
     def letters_num(self):
         return len(self.letters)
 
+
 class EngAlphabet(Alphabet):
+    __letters_num = 26
 
-     __letters_num = 26
+    def __init__(self, lang, letters):
+        super().__init__(lang, letters)
 
-     def __init__(self, lang, letters):
-         super().__init__(lang, letters)
+    def is_en_letter(self, letter):
+        self.letter = letter
+        if self.letter in self.letters:
+            return True
+        return False
 
+    def letters_num(self):
+        return EngAlphabet.__letters_num
 
-     def is_en_letter(self, letter):
-         self.letter = letter
-         if self.letter in self.letters:
-             return True
-         return False
-
-     def letters_num(self):
-         return EngAlphabet.__letters_num
-
-     @staticmethod
-     def example():
-         return f'Hello world'
+    @staticmethod
+    def example():
+        return f'Hello world'
 
 
 d = Alphabet('eng', ['a', 'b', 'c'])

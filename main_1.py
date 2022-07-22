@@ -18,18 +18,18 @@ class Human:
         return f'{default_name} {default_age}'
 
     def _make_deal(self, house, price):
-        self.__money-=price
+        self.__money -= price
         self.__house = house
 
     def earn_money(self, value):
         if isinstance(value, int):
-            self.__money+=value
+            self.__money += value
             return self.__money
         else:
             return f'Значение долно быть числом'
 
     def buy_house(self, house, price):
-        if self.__money>=price:
+        if self.__money >= price:
             print(f'Вы можите совершить сделку. Остаток на счету {self.__money}')
             self._make_deal(house, price)
         else:
@@ -38,13 +38,13 @@ class Human:
 
 class House:
 
-    def  __init__(self, area, price):
+    def __init__(self, area, price):
         self._area = area
         self._price = price
 
     def final_price(self, sale):
         self.sale = sale
-        self._price-=self.sale
+        self._price -= self.sale
         return self._price
 
 
@@ -52,10 +52,6 @@ class SmallHouse(House):
 
     def __init__(self, price, area=40):
         super().__init__(price, area)
-
-
-
-
 
 
 # d = Human(money=400)
