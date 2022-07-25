@@ -12,11 +12,6 @@ class Hotels:
         return self.count_rooms
 
 h = Hotels(3)
-class Room:
-    def __init__(self):
-        self.all = {1: 'свободно', 2: 'свободно', 3: 'свободно'}
-        self.free = [1, 2, 3]
-
 
 class Rooms:
     ALL_ROOMS = {1: 'свободно', 2: 'свободно', 3: 'свободно'}
@@ -68,10 +63,17 @@ class Rooms:
     def print_free_numbers(self, number):
         self.number = number
         return self.number
-# h = Hotels(3)
-# r = Rooms(h.get_count_rooms())
-# print(r.take_room_choose(3))
-class Human():
+
+    def cheak_repair(self, number):
+        self.room_number_repair = int(number)
+        print(self.ALL_ROOMS[self.room_number_repair])
+        if self.ALL_ROOMS[self.room_number_repair] == 'на ремонте':
+            print(self.ALL_ROOMS[self.room_number_repair])
+            return self.room_number_repair
+        else:
+            return False
+
+class Human:
     DICTS = {}
 
     def __init__(self, name):
@@ -79,22 +81,29 @@ class Human():
 
     @classmethod
     def get_info(cls):
+        sorted_tuple = sorted(cls.DICTS.items(), key=lambda x: x[0])
+        cls.DICTS = dict(sorted_tuple)
         return cls.DICTS
 
     def get_number(self, room):
         self.room = room
-        self.DICTS[self.name] = self.room
+        self.DICTS[self.room] = self.name
         return self.DICTS
 
-    def cheak_leaving(self):
-        for k, v in self.DICTS.items():
-            if self.name == k:
-                return v
+    def cheak_leaving(self, room_number):
+        self.room_number = int(room_number)
+        print(self.DICTS[self.room_number])
+        if self.DICTS[self.room_number] == self.name:
+            print(self.DICTS[self.room_number])
+            return self.room_number
+        else:
+            return False
 
-    def leaving(self):
-        self.number = self.cheak_leaving()
-        del self.DICTS[self.name]
+    def leaving(self, number):
+        self.room_number_leaving = number
+        del self.DICTS[self.room_number_leaving]
         return self.DICTS
+
 
 class Hotel:
 
@@ -124,75 +133,90 @@ class Hotel:
         if self.number in self.free:
             self.choose_room = self.room.take_room_choose(self.number)
             self.name.get_number(self.number)
-            return self.name.get_info()
+            return Human.get_info()
+        else:
+            return False
+
+    def cheack_out(self, room):
+        self.number = room
+        self.room_number = self.name.cheak_leaving(self.number)
+        if self.room_number:
+            self.name.leaving(self.room_number)
+            return self.room.change_status_free(self.room_number)
+        else:
+            return False
+
+    def status_for_repair(self, number):
+        self.number_repair = number
+        self.free = self.room.status_free()
+        if self.number_repair in self.free:
+            return self.room.change_status_repear(self.number_repair)
+        else:
+            return False
+
+    def status_for_free(self, number):
+        self.number_free = number
+        self.cheeak_number_free = self.room.cheak_repair(self.number_free)
+        if self.cheeak_number_free:
+            self.room.change_status_free(self.number_free)
+            return self.room.get_rooms()
         else:
             return False
 
 
-h = Hotel()
-print(h.get_state())
-print(h.get_free_rooms())
-print(h.register_person('jack'))
-print(h.take_non_choose_room())
-print(h.get_state())
-print(h.take_choose_room(2))
-print(h.get_state())
-print(h.get_free_rooms())
-print(h.take_choose_room(2))
-#
-# while True:
-#     action = input('Выберите действие: 1 посмотреть номерной фонд 2 посмотреть свободные номера, 3 заселить/выселить 4 сменить статус номера - на ремонте 5 список постояльцев')
-#     h = Hotels(3)
-#     r = Rooms(h.get_count_rooms())
-#     if action == "1":
-#         print(r.get_rooms())
-#     elif action == '2':
-#         print(r.status_free())
-#     elif action == '3':
-#         name = input("Введите имя: ")
-#         action_2 = input("Выберите действие: 1 заселить 2 выселить ")
-#         h = Human(name)
-#         print(action_2)
-#         if action_2 == '1':
-#             action_3 = input("Предоставить выбор номера? да/нет ")
-#             if action_3 == 'нет':
-#                 room = r.take_room()
-#                 print(room)
-#                 print(r.status_free())
-#                 print(r.get_rooms())
-#                 print(h.get_number(room))
-#                 print(h.get_info())
-#                 print(r.change_status_occupied(room))
-#
-#             if action_3 == 'да':
-#                 print(r.get_rooms())
-#                 action_4 = int(input("Введите номер: "))
-#                 free = r.status_free()
-#                 if action_4 in free:
-#                     room = r.take_room_choose(action_4)
-#                     print(room)
-#                     print(r.status_free())
-#                     print(r.get_rooms())
-#                     print(h.get_number(room))
-#                     print(h.get_info())
-#         elif action_2 == '2':
-#             room_number = h.cheak_leaving()
-#             print(h.cheak_leaving())
-#             print(h.leaving())
-#             print(r.change_status_free(room_number))
-#
-#     elif action == '4':
-#         print(r.status_free())
-#         free = r.status_free()
-#         action_5 = int(input(f"Введите номер комнаты: {free}"))
-#         if action_5 in free:
-#             print(r.change_status_repear(action_5))
-#         else:
-#             print(f'{action_5} не модет встать на ремонт он занят')
-#
-#     elif action == '5':
-#         print(Human.get_info())
-#
+while True:
+    action = input('Выберите действие: 1 посмотреть номерной фонд 2 посмотреть свободные номера, 3 заселить/выселить 4 сменить статус номера 5 список постояльцев')
+    h = Hotel()
+    if action == "1":
+        print(h.get_state())
+    elif action == '2':
+        print(h.get_free_rooms())
+    elif action == '3':
+        action_2 = input("Выберите действие: 1 заселить 2 выселить ")
+        print(action_2)
+        if action_2 == '1':
+            name = input("Введите имя: ")
+            print(h.register_person(name))
+            action_3 = input("Предоставить выбор номера? да/нет ")
+            if action_3 == 'нет':
+                print(h.take_non_choose_room())
+            if action_3 == 'да':
+                action_4 = int(input("Введите номер: "))
+                if h.take_choose_room(action_4):
+                    print(Human.get_info())
+                else:
+                    print("Выберите комнату из свободных:")
+                    print(h.get_free_rooms())
+        elif action_2 == '2':
+            room = input("Введите номер комнаты: ")
+            name = input("Введите имя: ")
+            h.register_person(name)
+            try:
+                if h.cheack_out(room):
+                    print(Human.get_info())
+                else:
+                    print(f'Проверьте соотвествие комнаты и постояльца')
+            except:
+                print(f'Проверьте соотвествие комнаты и постояльца')
+    elif action == '4':
+        action_5 = int(input(f"Введите номер комнаты: "))
+        action_7 = int(input(f"Установить статус 1 свободен 2 на ремонте: "))
+        if action_7 == 2:
+            if h.status_for_repair(action_5):
+                print(h.get_state())
+            else:
+                print(f'{action_5} не может встать на ремонт он занят')
+        elif action_7 == 1:
+            if h.status_for_free(action_5):
+                print(h.get_state())
+            else:
+                print(f'{action_5} не может встать встать на свободен он не был на ремонте')
+
+
+
+    elif action == '5':
+        print(Human.get_info())
+
 
             
 
