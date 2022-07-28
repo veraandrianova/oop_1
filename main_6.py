@@ -1,5 +1,4 @@
 class Hotels:
-
     status = {0: 'свободно', 1: 'на ремонте', 2: 'занято'}
 
     def __init__(self, count_rooms):
@@ -11,16 +10,19 @@ class Hotels:
     def get_count_rooms(self):
         return self.count_rooms
 
+
 h = Hotels(3)
+
 
 class Rooms:
     ALL_ROOMS = {1: 'свободно', 2: 'свободно', 3: 'свободно'}
 
-    def __init__(self):
+    def __init__(self, number):
+        self.number = number
+
         self.status = 'свободно'
         self.choose_room = 0
         self.free_rooms = self.status_free()
-
 
     def get_rooms(self):
         return self.print_numbers()
@@ -73,6 +75,7 @@ class Rooms:
         else:
             return False
 
+
 class Human:
     DICTS = {}
 
@@ -107,8 +110,19 @@ class Human:
 
 class Hotel:
 
-    def __init__(self):
+    def __init__(self, count_room):
+        self.rooms = [Rooms(i) for i in range(1, count_room+1)]
+
         self.room = Rooms()
+
+    def change_status(self, status, number_room):
+        for room in self.rooms:
+            if room.number == number_room:
+                room.status = status
+
+    def get_status_room_all(self):
+        for room in self.rooms:
+            print(f"Номер: {room.number} - {room.status}")
 
     def get_state(self):
         return self.room.get_rooms()
@@ -164,9 +178,18 @@ class Hotel:
             return False
 
 
+numbers = input('Сколько комнат в ателе? ')
+h = Hotel(numbers)
+
 while True:
-    action = input('Выберите действие: 1 посмотреть номерной фонд 2 посмотреть свободные номера, 3 заселить/выселить 4 сменить статус номера 5 список постояльцев')
-    h = Hotel()
+    action = input(
+        '''Выберите действие: 
+        1 посмотреть номерной фонд 
+        2 посмотреть свободные номера, 
+        3 заселить/выселить 
+        4 сменить статус номера 
+        5 список постояльцев''')
+
     if action == "1":
         print(h.get_state())
     elif action == '2':
@@ -212,13 +235,5 @@ while True:
             else:
                 print(f'{action_5} не может встать встать на свободен он не был на ремонте')
 
-
-
     elif action == '5':
         print(Human.get_info())
-
-
-            
-
-
-
