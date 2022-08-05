@@ -14,36 +14,28 @@ class Validator:
 
     def validator_phone(self):
         phone = self.user.get('phone')
-        if len(phone) >= 11 and len(phone) <= 12:
-            if phone[0] == '+' or phone[0].isdecimal():
-                if phone[1:].isdecimal():
-                    return True
-
+        if (len(phone) >= 11 and len(phone) <= 12) and (phone[0] == '+' or phone.isdecimal()):
+            return True
         return False
 
     def validator_name(self):
         name = self.user.get('name')
-        if len(name) >= 2:
-            if name.isalpha():
-                return True
+        if (len(name) >= 2) and (name.isalpha()):
+            return True
         return False
 
     def validator_email(self):
         email = self.user.get('email')
-        if len(email) >= 7:
-            if '@' in email:
-                if '.' in email:
-                    return True
+        if (len(email) >= 7) and ('@' in email) and ('.' in email):
+            return True
         return False
 
     def validator_user(self):
         phone = self.validator_phone()
         name = self.validator_name()
         email = self.validator_email()
-        if phone:
-            if name:
-                if email:
-                    return True
+        if phone and name and email:
+            return True
         return False
 
 
@@ -54,7 +46,7 @@ class Model:
         data = self.read()
         for k, v in data.items():
             if k == kwargs.get('phone'):
-                return k, v
+                return k, v['name'], v['email']
         return False
 
     def read(self):
@@ -67,17 +59,14 @@ class Model:
         entry.update(data)
         with open(self.file, "w", encoding='utf-8') as file:
             json.dump(entry, file)
-        return kwargs
+        return data
 
 
 class View:
 
-    def render(self, data):
-        self.data = data
-        name = self.data['name']
-        phone = self.data['phone']
-        email = self.data['email']
-        return f'{name} - {phone} - {email}'
+    def render(self, *args, **kwargs):
+        total = f"{kwargs['phone']} - {kwargs['name']} - {kwargs['email']}"
+        return total
 
 
 class Controller:
@@ -87,13 +76,9 @@ class Controller:
         validator = Validator()
         result = validator.validator(*args, **kwargs)
         if result:
-            res = model.filter(*args, **kwargs)
-            if res:
-                data = {}
-                data['phone'] = res[0]
-                data['name'] = res[1].get('name')
-                data['email'] = res[1].get('email')
-                return 200, View().render(data)
+            phone, name, email = model.filter(*args, **kwargs)
+            if phone and name and email:
+                return 200, View().render(phone=phone, name=name, email=email)
             else:
                 return 400, False
         else:
@@ -104,16 +89,12 @@ class Controller:
         validator = Validator()
         result = validator.validator(*args, **kwargs)
         if result:
-            res = model.filter(*args, **kwargs)
-            if not res:
+            if not model.filter(*args, **kwargs):
                 user = model.save(*args, **kwargs)
-                return 200, View().render(user)
+                return 200, View().render(*args, **kwargs)
             else:
-                data = {}
-                data['phone'] = res[0]
-                data['name'] = res[1].get('name')
-                data['email'] = res[1].get('email')
-                return 400, View().render(data)
+                phone, name, email = model.filter(*args, **kwargs)
+                return 400, View().render(phone=phone, name=name, email=email)
         else:
             return 404, False
 
@@ -140,6 +121,7 @@ class Interface:
                 print(result)
             elif status == 400:
                 print('Абонент существует', status)
+                print(result)
             elif status == 404:
                 print(
                     'Номер абонента должен быть ввида: +79998887766 или 89998887766\n' 'Имя может содежать только буквы\n' 'Почта абонента должен быть ввида: a1@ya.ru')
@@ -150,6 +132,7 @@ class Interface:
             status, result = Controller().get(phone=phone)
             if status == 200:
                 print('Абонент найден', status)
+                print(result)
             elif status == 400:
                 print('Абонента не существует', status)
                 action_to_save = input('Сохранить абонента? да/нет')
