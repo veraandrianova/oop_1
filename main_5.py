@@ -9,94 +9,55 @@
 import random
 
 
-class Member:
+import random
 
-    def __init__(self, number, command):
+
+class Unit:
+    def __init__(self, number, commandid):
         self.number = number
-        self.command = command
-
-    def get_member(self):
-        return f'{self.number} {self.command}'
+        self.commandId = commandid
 
 
-class Members:
+class Hero(Unit):
+    def __init__(self,  number, commandid, name, level=1):  # При инициализации добавляем свойства name и level
+        Unit.__init__(self, number, commandid)
+        self.name = name  # Привязываем классу Hero свойство level и name
+        self.level = level
 
-    def __init__(self):
-        number = '012345'
-        command = '12'
-        self.member = [Member(n, m) for m in command for n in number]
-        random.shuffle(self.member)
+    def getlevel(self):
+        return self.level
 
-    def get_members(self):
-        return self.member.pop()
-
-
-f = Members()
-print(f.get_members)
-print(f.member)
-
-
-class Hero:
-    number = 0
-    command = 0
-
-    def __init__(self, number, command):
-        self.number = number
-        self.command = command
-
-    def print_level(self):
-        print(f'уровень у солдата{self.level}')
-
-    def level(self):
+    def inclevel(self):
         self.level += 1
-        self.print_level()
+        print('Уровень героя', self.name,'увеличен на 1 и равен', self.level)
 
 
-class Soldier:
-    number = 0
-    command = 0
-
-    def __init__(self, number, command):
-        self.number = number
-        self.command = command
-
-    def go_to_hero(self, hero: Hero):
-        self.hero = hero
-        return f'Иду за {self.hero}'
+class Soldier(Unit):
+    def gotohero(self, Hero):
+        print('Солдат номер', self.number, 'следует за героем', Hero.name, 'с номером', Hero.number)
 
 
-class Players:
+H1 = Hero(1, 1, 'Arthas')  # Создаем героев с номерами 1 и 2
+H2 = Hero(2, 2, 'Illidan')
+armyH1, armyH2 = [], []  # Списки солдат
 
-    def __init__(self, member):
-        self.member = member
-        self.firs_command = []
-        self.second_command = []
+for i in range(3, 10):  # Генерим нечетное количество солдат
+    n = random.randint(0, 1)
+    if n:
+        armyH1.append(Soldier(i, 1))
+        print('Солдат с номером', i, 'добавлен в армию', H1.name)
+    else:
+        armyH2.append(Soldier(i, 2))
+        print('Солдат с номером', i, 'добавлен в армию', H2.name)
 
-    @property
-    def get_command(self):
-        return f'{self.firs_command}, {self.second_command}'
+print('Армия героя', H1.name, ':', len(armyH1))
+print('Армия героя', H2.name, ':', len(armyH2))
 
-    @get_command.setter
-    def get_command(self, member: Member):
-        if member.get_member()[1] == 0:
-            self.firs_command.append(member)
-        else:
-            self.second_command.append(member)
+if len(armyH1) > len(armyH2):
+    print('В армии', H1.name, 'больше солдат, увеличиваем его уровень')
+    H1.inclevel()
+else:
+    print('В армии', H2.name, 'больше солдат, увеличиваем его уровень')
+    H2.inclevel()
 
-
-class Play():
-
-    def __init__(self, number_1, command_1, number_2, command_2):
-        self.soldier = Members()
-        self.hero_1 = Hero(number=number_1, command=command_1)
-        self.hero_2 = Hero(number=number_2, command=command_2)
-        self.command_1 = Players(member=command_1)
-        self.command_2 = Players(member=command_2)
-
-    def start(self):
-        self.command_1.get_command = self.soldier.get_members()
-        self.command_2.get_command = self.soldier.get_members()
-        print(self.command_1.get_command, self.command_2.get_command)
-
-
-game = Play(1, 1, 2, 2)
+armyH1[1].gotohero(H2)
